@@ -6,7 +6,5 @@ def batch_norm(X: torch.Tensor, gamma: torch.Tensor, beta: torch.Tensor, eps: fl
     """
     mu = X.mean(dim=0, keepdim=True)
     variance = ((X-mu)**2).mean(dim = 0, keepdim=True)
-    # gamma = gamma[None,:]
-    # beta = beta[None,:]
     denominator = torch.rsqrt(variance+eps)
     return gamma*(X-mu)*denominator + beta
