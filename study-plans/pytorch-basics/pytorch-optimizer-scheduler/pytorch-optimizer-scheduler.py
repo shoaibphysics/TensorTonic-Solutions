@@ -7,11 +7,11 @@ def train_with_scheduler(model: nn.Module, dataloader: torch.utils.data.DataLoad
     """
     losses = []
     lrs = []
+
     for epoch in range(1, num_epochs+1):
         model.train()
         current_lr = optimizer.param_groups[0]["lr"]
         lrs.append(current_lr)
-
         total_loss = 0.0
         num_batches = 0.0
         for x,y in dataloader:
@@ -23,5 +23,4 @@ def train_with_scheduler(model: nn.Module, dataloader: torch.utils.data.DataLoad
             num_batches+=1
         losses.append(total_loss/num_batches)
         scheduler.step()
-    return {"losses" : losses, "lrs" : lrs}
-            
+    return {"losses":losses, "lrs":lrs}
