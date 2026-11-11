@@ -39,6 +39,7 @@ Verified machine learning implementations completed on [TensorTonic](https://www
 | Matrix-Vector Multiply | Multiply a NumPy matrix by a compatible vector, producing one row-wise dot product per output element. | https://www.tensortonic.com/problems/la-matrix-vector-multiply |
 | Orthogonal Projection Matrix | Construct the orthogonal projection matrix onto the column space of a full-column-rank matrix. | https://www.tensortonic.com/problems/la-orthogonal-projection |
 | Outer Product | Compute the NumPy outer product of two vectors as a matrix containing every pairwise element multiplication. | https://www.tensortonic.com/problems/la-outer-product |
+| Moore-Penrose Pseudoinverse | Compute the Moore-Penrose pseudoinverse of rectangular or singular matrices using singular-value decomposition. | https://www.tensortonic.com/problems/la-pseudoinverse |
 | Solve Linear System | Solve an invertible square linear system for the unique vector satisfying the matrix equation. | https://www.tensortonic.com/problems/la-solve-linear-system |
 | SVD Components | Compute singular values and aligned singular vectors for a possibly rank-deficient matrix using NumPy. | https://www.tensortonic.com/problems/la-svd-components |
 | Vector Norms | Compute L1, L2, and infinity norms for a one-dimensional NumPy vector and return them in a float64 array. | https://www.tensortonic.com/problems/la-vector-norms |
