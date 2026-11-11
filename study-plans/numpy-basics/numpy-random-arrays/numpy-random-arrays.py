@@ -6,7 +6,7 @@ def generate_random_array(shape: list, kind: str, seed: int) -> np.ndarray:
     """
     rng = np.random.default_rng(seed=seed)
     if kind == "uniform":
-        return rng.random(shape)
-    return rng.standard_normal(shape)
+        return rng.random(tuple(shape))
+    return rng.standard_normal(tuple(shape))
     
     
