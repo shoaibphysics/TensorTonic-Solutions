@@ -13,58 +13,30 @@ def grouped_query_attention(
     """
     Returns an attention tensor with the same shape as hidden_states.
     """
+    B, T, D = hidden_states.shape
+    head_dim = D // num_query_heads
+    g = num_query_heads // num_kv_heads
+
     if num_query_heads % num_kv_heads != 0:
         raise ValueError("num_query_heads must be divisible by num_kv_heads")
+    
+    assert D == w_q.shape[0] , "dimension of w_q not compatible"
+    assert head_dim*num_kv_heads == w_v.shape[-1] , "dimension of w_q, w_v not compatible"
 
-    batch, seq, d_model = hidden_states.shape
-    d_k = d_model // num_query_heads
-    group_size = num_query_heads // num_kv_heads
+    q = (hidden_states @ w_q).reshape(B,T,num_query_heads, head_dim).transpose(1,2) # (B, hq ,T,d)
+    k = (hidden_states @ w_k).reshape(B,T,num_kv_heads, head_dim).transpose(1,2) # (B, hkv, T d)
+    v = (hidden_states @ w_v).reshape(B,T,num_kv_heads, head_dim).transpose(1,2) # (B, hkv, T d)
 
-    query = hidden_states @ w_q
-    key = hidden_states @ w_k
-    value = hidden_states @ w_v
+    k = k.repeat_interleave(g, dim = 1)
+    v = v.repeat_interleave(g, dim = 1)
 
-    query = query.view(batch, seq, num_query_heads, d_k).transpose(1, 2)
-    key = key.view(batch, seq, num_kv_heads, d_k).transpose(1, 2)
-    value = value.view(batch, seq, num_kv_heads, d_k).transpose(1, 2)
+    scores = (q @ k.transpose(-2,-1))/(head_dim**(0.5))
 
-    key = key.repeat_interleave(group_size, dim=1)
-    value = value.repeat_interleave(group_size, dim=1)
-
-    scores = torch.matmul(query, key.transpose(-2, -1)) / (d_k ** 0.5)
     if causal:
-        mask = torch.triu(torch.ones(seq, seq, dtype=torch.bool), diagonal=1)
-        scores = scores.masked_fill(mask, float("-inf"))
+        mask = torch.ones((T,T), dtype=torch.bool).tril()
+        scores = scores.masked_fill(~mask, float("-inf"))
 
-    weights = torch.softmax(scores, dim=-1)
-    attn = torch.matmul(weights, value)
-
-    concat = attn.transpose(1, 2).contiguous().view(batch, seq, d_model)
-    return concat @ w_o
-
-
-    
-    # B, T, D = hidden_states.shape
-    # head_dim = D // num_query_heads
-    # g = num_query_heads // num_kv_heads
-    
-    # assert D == w_q.shape[0] , "dimension of w_q not compatible"
-    # assert head_dim*num_kv_heads == w_v.shape[-1] , "dimension of w_q, w_v not compatible"
-
-    # q = (hidden_states @ w_q).reshape(B,T,num_query_heads, head_dim).transpose(1,2) # (B, hq ,T,d)
-    # k = (hidden_states @ w_k).reshape(B,T,num_kv_heads, head_dim).transpose(1,2) # (B, hkv, T d)
-    # v = (hidden_states @ w_v).reshape(B,T,num_kv_heads, head_dim).transpose(1,2) # (B, hkv, T d)
-
-    # k = k.repeat_interleave(g, dim = 1)
-    # v = v.repeat_interleave(g, dim = 1)
-
-    # scores = (q @ k.transpose(-2,-1))/(head_dim**(0.5))
-
-    # if causal:
-    #     mask = torch.ones((T,T), dtype=torch.bool).tril()
-    #     scores = scores.masked_fill(~mask, float("-inf"))
-
-    # weights = scores.softmax(dim=-1)
-    # values = (weights @ v).transpose(1,2).contiguous().view(B,T,D)
-    # return values @ w_o
+    weights = scores.softmax(dim=-1)
+    values = (weights @ v).transpose(1,2).contiguous().view(B,T,D)
+    return values @ w_o
     
