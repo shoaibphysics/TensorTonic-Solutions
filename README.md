@@ -56,6 +56,7 @@ Verified machine learning implementations completed on [TensorTonic](https://www
 | Vector Norms | Compute L1, L2, and infinity norms for a one-dimensional NumPy vector and return them in a float64 array. | https://www.tensortonic.com/problems/la-vector-norms |
 | Vector Projection | The vector projection of u onto v is the component of u that lies exactly along the direction of v. | https://www.tensortonic.com/problems/la-vector-projection |
 | Whitening Transform | Center and whiten a data matrix so the transformed features have zero mean and identity covariance. | https://www.tensortonic.com/problems/la-whitening |
+| Distance Metrics | Compute Euclidean, Manhattan, cosine, Chebyshev, and Minkowski distances between numeric vectors. | https://www.tensortonic.com/problems/ml-distance-metrics |
 | Feature Scaling | Implement column-wise min-max scaling and z-score standardization while handling constant features safely. | https://www.tensortonic.com/problems/ml-feature-scaling |
 | Missing Value Imputation | Impute missing numeric values with column-wise mean, median, or most-frequent statistics while preserving observed values. | https://www.tensortonic.com/problems/ml-imputation |
 | KNN Classifier | Implement K-nearest neighbors classification using Euclidean distance, majority voting, and deterministic tie-breaking. | https://www.tensortonic.com/problems/ml-knn-classifier |
